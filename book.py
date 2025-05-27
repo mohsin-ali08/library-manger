@@ -28,14 +28,14 @@ def add_book(title, author, year, genre, read_status):
     }
     library.append(book)
     save_library()
-    st.success("Book added successfully!")
+    st.success("✅ Book added successfully!")
 
 # Function to remove a book
 def remove_book(title):
     global library
     library = [book for book in library if book["title"].lower() != title.lower()]
     save_library()
-    st.success("Book removed successfully!")
+    st.success("🗑️ Book removed successfully!")
 
 # Function to search for a book
 def search_books(query, search_by):
@@ -50,7 +50,7 @@ def search_books(query, search_by):
 # Function to display all books
 def display_books():
     if not library:
-        st.write("Your library is empty.")
+        st.write("📭 Your library is empty.")
     else:
         for i, book in enumerate(library, 1):
             read_status = "Read" if book["read_status"] else "Unread"
@@ -61,72 +61,74 @@ def display_statistics():
     total_books = len(library)
     read_books = sum(book["read_status"] for book in library)
     percentage_read = (read_books / total_books * 100) if total_books > 0 else 0
-    st.write(f"Total books: {total_books}")
-    st.write(f"Percentage read: {percentage_read:.1f}%")
+    st.write(f"📚 Total books: **{total_books}**")
+    st.write(f"✅ Percentage read: **{percentage_read:.1f}%**")
 
 # Streamlit UI
-st.title("Personal Library Manager 📚")
+st.markdown("""
+    <div style="background-color:#f0f2f6;padding:10px;border-radius:10px">
+    <h2 style="color:#333;text-align:center;">📚 Welcome to Mohsin Ali's Personal Library</h2>
+    </div>
+""", unsafe_allow_html=True)
 
 # Menu options
 menu = st.sidebar.selectbox(
-    "Menu",
+    "📂 Menu",
     ["Add a Book", "Remove a Book", "Search for a Book", "Display All Books", "Display Statistics"]
 )
 
 if menu == "Add a Book":
-    st.header("Add a Book")
-    title = st.text_input("Title")
-    author = st.text_input("Author")
-    year = st.number_input("Publication Year", min_value=1800, max_value=2100, step=1)
-    genre = st.text_input("Genre")
+    st.header("📘 Add a New Book to Your Library")
+    col1, col2 = st.columns(2)
+    with col1:
+        title = st.text_input("Title")
+        author = st.text_input("Author")
+    with col2:
+        year = st.number_input("Publication Year", min_value=1800, max_value=2100, step=1)
+        genre = st.text_input("Genre")
+    
     read_status = st.checkbox("Have you read this book?")
-    if st.button("Add Book"):
+    
+    if st.button("➕ Add Book"):
         if title and author and year and genre:
             add_book(title, author, year, genre, read_status)
         else:
-            st.error("Please fill in all fields.")
+            st.error("❗ Please fill in all fields.")
 
 elif menu == "Remove a Book":
-    st.header("Remove a Book")
+    st.header("❌ Remove a Book")
     title = st.text_input("Enter the title of the book to remove")
-    if st.button("Remove Book"):
+    if st.button("🗑️ Remove Book"):
         if title:
             remove_book(title)
         else:
-            st.error("Please enter a title.")
+            st.error("❗ Please enter a title.")
 
 elif menu == "Search for a Book":
-    st.header("Search for a Book")
+    st.header("🔍 Search for a Book")
     search_by = st.radio("Search by", ["Title", "Author"])
     query = st.text_input(f"Enter the {search_by.lower()}")
-    if st.button("Search"):
+    if st.button("🔎 Search"):
         if query:
             results = search_books(query, search_by.lower())
             if results:
-                st.write("Matching Books:")
+                st.write("📕 Matching Books:")
                 for i, book in enumerate(results, 1):
                     read_status = "Read" if book["read_status"] else "Unread"
                     st.write(f"{i}. **{book['title']}** by {book['author']} ({book['year']}) - {book['genre']} - {read_status}")
             else:
-                st.write("No matching books found.")
+                st.warning("🔍 No matching books found.")
         else:
-            st.error("Please enter a search term.")
+            st.error("❗ Please enter a search term.")
 
 elif menu == "Display All Books":
-    st.header("Your Library")
+    st.header("📚 Your Library")
     display_books()
 
 elif menu == "Display Statistics":
-    st.header("Library Statistics")
+    st.header("📊 Library Statistics")
     display_statistics()
 
 # Footer
 st.sidebar.markdown("---")
-st.sidebar.write("Made by Taha Siddiqui ")
-
-
-
-
-
-
-
+st.sidebar.write("Made by **Mohsin Ali**")
